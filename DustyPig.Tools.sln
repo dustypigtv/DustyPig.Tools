@@ -1,0 +1,41 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31729.503
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DustyPig.Tools", "DustyPig.Tools\DustyPig.Tools.csproj", "{BF2816EC-FFDD-441B-A7C6-31393B811F53}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3C991A3F-D031-4BF1-8E5C-BA48C2B82652}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{43C52D71-3A54-45D5-8698-F56A211B8846}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{1E167917-D879-48C1-A5C7-C73346BD0A66}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\release.yml = .github\workflows\release.yml
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BF2816EC-FFDD-441B-A7C6-31393B811F53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF2816EC-FFDD-441B-A7C6-31393B811F53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF2816EC-FFDD-441B-A7C6-31393B811F53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF2816EC-FFDD-441B-A7C6-31393B811F53}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{43C52D71-3A54-45D5-8698-F56A211B8846} = {3C991A3F-D031-4BF1-8E5C-BA48C2B82652}
+		{1E167917-D879-48C1-A5C7-C73346BD0A66} = {43C52D71-3A54-45D5-8698-F56A211B8846}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6A403AB7-BFE1-44BB-B40E-60BC333313CE}
+	EndGlobalSection
+EndGlobal
