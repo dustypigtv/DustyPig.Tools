@@ -15,6 +15,8 @@
         public static Tool HandBrakeCLI => new Tool { Exe = "handbrakecli.exe", Name = "handbrakecli" };
 
         public static Tool Rclone => new Tool { Exe = "rclone.exe", Name = "rclone" };
+
+        public static Tool Tagger => new Tool {Exe = "Tagger.exe", Name = "Tagger"};
     
     }
 }
