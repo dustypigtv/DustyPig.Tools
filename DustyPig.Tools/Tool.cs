@@ -12,37 +12,68 @@ namespace DustyPig.Tools
         internal string Name { get; set; }
         internal string Exe { get; set; }
 
-        private string ExeDir
+        private static string RootDir
         {
             get
             {
                 string ret = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-                ret = Path.Combine(ret, "DustyPig.tv", "tools", Name);
+                ret = Path.Combine(ret, "DustyPig.tv");
+                return Directory.CreateDirectory(ret).FullName;
+            }
+        }
+
+        private static string VersionsDir
+        {
+            get
+            {
+                string ret = Path.Combine(RootDir, "tool.versions");
+                return Directory.CreateDirectory(ret).FullName;
+            }
+        }
+
+        private string ExeDir
+        {
+            get
+            {
+                string ret = Path.Combine(RootDir, "tools", Name);
                 return Directory.CreateDirectory(ret).FullName;
             }
         }
 
         public string ExePath => Path.Combine(ExeDir, Exe);
 
-        public bool IsInstalled => File.Exists(ExePath);
+        private string VersionPath => Path.Combine(VersionsDir, Name + ".ver");
+
+        private string ServerVersionPath => ROOT_URL + Name + ".ver";
+
+        private string ServerZipPath => ROOT_URL + Name + ".zip";
+
+
 
         public void Install()
         {
-            if (IsInstalled)
-                return;
+            Version localVersion = new Version();
+            try { localVersion = Version.Parse(File.ReadAllText(VersionPath)); }
+            catch { }
 
-            string tmpFile = Path.GetTempFileName();
-            TryDeleteFile(tmpFile);
-            tmpFile += ".zip";
-            try
+            using var wc = new WebClient();
+            Version serverVersion = Version.Parse(wc.DownloadString(ServerVersionPath));
+
+            if (serverVersion > localVersion || !File.Exists(ExePath))
             {
-                using var wc = new WebClient();
-                wc.DownloadFile(ROOT_URL + Name + ".zip", tmpFile);
-                ZipFile.ExtractToDirectory(tmpFile, ExeDir);
-            }
-            finally
-            {
+                string tmpFile = Path.GetTempFileName();
                 TryDeleteFile(tmpFile);
+                tmpFile += ".zip";
+                try
+                {
+                    wc.DownloadFile(ServerZipPath, tmpFile);
+                    ZipFile.ExtractToDirectory(tmpFile, ExeDir, true);
+                    File.WriteAllText(VersionPath, serverVersion.ToString());
+                }
+                finally
+                {
+                    TryDeleteFile(tmpFile);
+                }
             }
         }
 
