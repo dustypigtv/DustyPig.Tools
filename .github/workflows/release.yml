@@ -11,10 +11,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Setup .NET Core
+      - name: Setup .NET Core 5 for tsv
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 5.0.x
+
+      - name: Setup .NET Core 6 for building
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 6.0.x
 
       - name: Build
         run: |
