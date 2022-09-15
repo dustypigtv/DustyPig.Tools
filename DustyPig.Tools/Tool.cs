@@ -2,6 +2,8 @@
 using System.IO;
 using System.IO.Compression;
 using System.Net;
+using System.Threading.Tasks;
+using WebUtils;
 
 namespace DustyPig.Tools
 {
@@ -50,14 +52,14 @@ namespace DustyPig.Tools
 
 
 
-        public void Install()
+        public async Task InstallAsync()
         {
             Version localVersion = new Version();
             try { localVersion = Version.Parse(File.ReadAllText(VersionPath)); }
             catch { }
 
-            using var wc = new WebClient();
-            Version serverVersion = Version.Parse(wc.DownloadString(ServerVersionPath));
+
+            Version serverVersion = Version.Parse(await SimpleDownloader.DownloadStringAsync(ServerVersionPath).ConfigureAwait(false));
 
             if (serverVersion > localVersion || !File.Exists(ExePath))
             {
@@ -66,7 +68,7 @@ namespace DustyPig.Tools
                 tmpFile += ".zip";
                 try
                 {
-                    wc.DownloadFile(ServerZipPath, tmpFile);
+                    await SimpleDownloader.DownloadFileAsync(ServerZipPath, tmpFile).ConfigureAwait(false);
                     ZipFile.ExtractToDirectory(tmpFile, ExeDir, true);
                     File.WriteAllText(VersionPath, serverVersion.ToString());
                 }
