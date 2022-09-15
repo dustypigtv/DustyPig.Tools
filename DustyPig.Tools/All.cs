@@ -17,6 +17,8 @@
         public static Tool Rclone => new Tool { Exe = "rclone.exe", Name = "rclone" };
 
         public static Tool Tagger => new Tool {Exe = "Tagger.exe", Name = "Tagger"};
+        
+        public static Tool MPV => new Tool { Exe = "mpv.exe", Name = "mpv" };
     
     }
 }
