@@ -33,7 +33,7 @@ namespace DustyPig.Tools
             }
         }
 
-        private string ExeDir
+        public string ExeDir
         {
             get
             {
