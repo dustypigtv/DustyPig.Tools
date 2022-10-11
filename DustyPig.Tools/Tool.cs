@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.IO.Compression;
-using System.Net;
 using System.Threading.Tasks;
 using WebUtils;
 
@@ -54,7 +53,7 @@ namespace DustyPig.Tools
 
         public async Task InstallAsync()
         {
-            Version localVersion = new Version();
+            Version localVersion = new();
             try { localVersion = Version.Parse(File.ReadAllText(VersionPath)); }
             catch { }
 

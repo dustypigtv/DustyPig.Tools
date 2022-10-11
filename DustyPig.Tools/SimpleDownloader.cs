@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace WebUtils
 {
-    public static class SimpleDownloader
+    static class SimpleDownloader
     {
-        static HttpClient _httpClient = new HttpClient();
+        static readonly HttpClient _httpClient = new();
 
         static async Task<HttpResponseMessage> GetResponseAsync(string url, CancellationToken cancellationToken)
         {
