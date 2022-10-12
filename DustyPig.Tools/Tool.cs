@@ -10,7 +10,7 @@ namespace DustyPig.Tools
     {
         private const string ROOT_URL = "https://dustypig.s3.us-central-1.wasabisys.com/bin/tools/";
 
-        internal string Name { get; set; }
+        public string Name { get; internal set; }
         internal string Exe { get; set; }
 
         private static string RootDir
