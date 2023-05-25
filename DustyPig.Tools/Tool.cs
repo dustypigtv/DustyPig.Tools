@@ -8,7 +8,7 @@ namespace DustyPig.Tools
 {
     public class Tool
     {
-        private const string ROOT_URL = "https://dustypig.s3.us-central-1.wasabisys.com/bin/tools/";
+        private const string ROOT_URL = "https://s3.dustypig.tv/bin/tools/";
 
         public string Name { get; internal set; }
         internal string Exe { get; set; }
