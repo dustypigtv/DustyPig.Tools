@@ -1,9 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6</TargetFramework>
+    <TargetFrameworks>net6;net7;net8</TargetFrameworks>
+	<LangVersion>12</LangVersion>
     <Authors>DustyPig.tv</Authors>
-    <Version>1.0.0.0</Version>
+    <Version>1.1.0.0</Version>
     <Company>DustyPig.tv</Company>
     <Description>Provides interface to external tools used in various Dusty Pig apps</Description>
     <Copyright>DustyPig.tv</Copyright>
@@ -12,5 +13,9 @@
     <RepositoryUrl>https://github.com/dustypigtv/DustyPig.Tools.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DustyPig.SimpleDownloader" Version="3.2.0.9" />
+  </ItemGroup>
 
 </Project>
