@@ -4,95 +4,92 @@ using System.IO;
 using System.IO.Compression;
 using System.Threading.Tasks;
 
-namespace DustyPig.Tools
+namespace DustyPig.Tools;
+
+public class Tool
 {
-    public class Tool
+    const string ROOT_URL = "https://s3.dustypig.tv/bin/tools/";
+
+    internal Tool() { }
+
+    public string Name { get; internal set; }
+
+    internal string Exe { get; set; }
+
+    static DirectoryInfo RootDir
     {
-        private const string ROOT_URL = "https://s3.dustypig.tv/bin/tools/";
-
-        public string Name { get; internal set; }
-        internal string Exe { get; set; }
-
-        private static string RootDir
+        get
         {
-            get
-            {
-                string ret = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-                ret = Path.Combine(ret, "DustyPig.tv");
-                return Directory.CreateDirectory(ret).FullName;
-            }
+            string ret = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            ret = Path.Combine(ret, "DustyPig.tv");
+            return Directory.CreateDirectory(ret);
         }
+    }
 
-        private static string VersionsDir
+    static DirectoryInfo VersionsDir
+    {
+        get
         {
-            get
-            {
-                string ret = Path.Combine(RootDir, "tool.versions");
-                return Directory.CreateDirectory(ret).FullName;
-            }
+            string ret = Path.Combine(RootDir.FullName, "tool.versions");
+            return Directory.CreateDirectory(ret);
         }
+    }
 
-        public string ExeDir
+    public DirectoryInfo ExeDir
+    {
+        get
         {
-            get
-            {
-                string ret = Path.Combine(RootDir, "tools", Name);
-                return Directory.CreateDirectory(ret).FullName;
-            }
+            string ret = Path.Combine(RootDir.FullName, "tools", Name);
+            return Directory.CreateDirectory(ret);
         }
+    }
 
-        public string ExePath => Path.Combine(ExeDir, Exe);
+    public FileInfo ExePath => new(Path.Combine(ExeDir.FullName, Exe));
 
-        private string VersionPath => Path.Combine(VersionsDir, Name + ".ver");
+    FileInfo VersionPath => new(Path.Combine(VersionsDir.FullName, Name + ".ver"));
 
-        private string ServerVersionPath => ROOT_URL + Name + ".ver";
+    Uri ServerVersionPath => new(ROOT_URL + Name + ".ver");
 
-        private string ServerZipPath => ROOT_URL + Name + ".zip";
+    Uri ServerZipPath => new(ROOT_URL + Name + ".zip");
 
 
 
-        public async Task InstallAsync()
+    public async Task InstallAsync()
+    {
+        Version localVersion = new();
+        try { localVersion = Version.Parse(File.ReadAllText(VersionPath.FullName)); }
+        catch { }
+
+
+        Version serverVersion = Version.Parse(await SimpleDownloader.DownloadStringAsync(ServerVersionPath).ConfigureAwait(false));
+
+        if (serverVersion > localVersion || !ExePath.Exists)
         {
-            Version localVersion = new();
-            try { localVersion = Version.Parse(File.ReadAllText(VersionPath)); }
-            catch { }
-
-
-            Version serverVersion = Version.Parse(await SimpleDownloader.DownloadStringAsync(ServerVersionPath).ConfigureAwait(false));
-
-            if (serverVersion > localVersion || !File.Exists(ExePath))
-            {
-                string tmpFile = Path.GetTempFileName();
-                TryDeleteFile(tmpFile);
-                tmpFile += ".zip";
-                try
-                {
-                    await SimpleDownloader.DownloadFileAsync(ServerZipPath, tmpFile).ConfigureAwait(false);
-                    ZipFile.ExtractToDirectory(tmpFile, ExeDir, true);
-                    File.WriteAllText(VersionPath, serverVersion.ToString());
-                }
-                finally
-                {
-                    TryDeleteFile(tmpFile);
-                }
-            }
-        }
-
-        public void UnInstall()
-        {
-            if (Directory.Exists(ExeDir))
-                Directory.Delete(ExeDir, true);
-        }
-
-        private static void TryDeleteFile(string filename)
-        {
+            FileInfo tmpFile = new(Path.GetTempFileName());
+            TryDeleteFile(tmpFile);
+            tmpFile = new(tmpFile.FullName + ".zip");
             try
             {
-                if (File.Exists(filename))
-                    File.Delete(filename);
+                await SimpleDownloader.DownloadFileAsync(ServerZipPath, tmpFile).ConfigureAwait(false);
+                ZipFile.ExtractToDirectory(tmpFile.FullName, ExeDir.FullName, true);
+                File.WriteAllText(VersionPath.FullName, serverVersion.ToString());
             }
-            catch { }
+            finally
+            {
+                TryDeleteFile(tmpFile);
+            }
         }
+    }
 
+    public void UnInstall()
+    {
+        try { ExeDir.Delete(true); }
+        catch { }
+    }
+
+    static void TryDeleteFile(FileInfo fileInfo)
+    {
+        try { fileInfo.Delete(); }
+        catch { }
     }
 }
