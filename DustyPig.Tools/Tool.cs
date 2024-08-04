@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using System.IO.Compression;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace DustyPig.Tools;
@@ -53,15 +54,20 @@ public class Tool
     Uri ServerZipPath => new(ROOT_URL + Name + ".zip");
 
 
-
     public async Task InstallAsync()
+    {
+        using var httpClient = new HttpClient();
+        await InstallAsync(httpClient).ConfigureAwait(false);
+    }
+
+    public async Task InstallAsync(HttpClient httpClient)
     {
         Version localVersion = new();
         try { localVersion = Version.Parse(File.ReadAllText(VersionPath.FullName)); }
         catch { }
 
 
-        Version serverVersion = Version.Parse(await SimpleDownloader.DownloadStringAsync(ServerVersionPath).ConfigureAwait(false));
+        Version serverVersion = Version.Parse(await httpClient.DownloadStringAsync(ServerVersionPath).ConfigureAwait(false));
 
         if (serverVersion > localVersion || !ExePath.Exists)
         {
@@ -70,7 +76,7 @@ public class Tool
             tmpFile = new(tmpFile.FullName + ".zip");
             try
             {
-                await SimpleDownloader.DownloadFileAsync(ServerZipPath, tmpFile).ConfigureAwait(false);
+                await httpClient.DownloadFileAsync(ServerZipPath, tmpFile).ConfigureAwait(false);
                 ZipFile.ExtractToDirectory(tmpFile.FullName, ExeDir.FullName, true);
                 File.WriteAllText(VersionPath.FullName, serverVersion.ToString());
             }
