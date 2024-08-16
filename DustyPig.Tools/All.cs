@@ -20,4 +20,6 @@ public static class All
 
     public static Tool MPV => new() { Exe = "mpv.exe", Name = "mpv" };
 
+    public static Tool FasterWhisperXXL = new() { Exe = "faster-whisper-xxl.exe", Name = "Faster-Whisper-XXL" };
+
 }
