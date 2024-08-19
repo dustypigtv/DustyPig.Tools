@@ -29,7 +29,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="DustyPig.SimpleDownloader" Version="3.2.0.15" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
 	</ItemGroup>
 
