@@ -48,7 +48,7 @@ public class Tool
             try
             {
                 if (InstallPointer.Exists)
-                    ret = File.ReadAllText(InstallPointer.FullName).Trim();
+                    ret = Path.Combine(File.ReadAllText(InstallPointer.FullName).Trim(), Name);
             }
             catch { }
 
