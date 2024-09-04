@@ -3,6 +3,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net.Http;
+using System.Reflection.Metadata.Ecma335;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -42,7 +43,18 @@ public class Tool
     {
         get
         {
-            string ret = Path.Combine(RootDir.FullName, "tools", Name);
+            string ret = null;
+
+            try
+            {
+                if (InstallPointer.Exists)
+                    ret = File.ReadAllText(InstallPointer.FullName).Trim();
+            }
+            catch { }
+
+            if(string.IsNullOrWhiteSpace(ret))
+                ret = Path.Combine(RootDir.FullName, "tools", Name);
+
             return Directory.CreateDirectory(ret);
         }
     }
@@ -51,10 +63,20 @@ public class Tool
 
     FileInfo VersionPath => new(Path.Combine(VersionsDir.FullName, Name + ".ver"));
 
+    FileInfo InstallPointer => new(Path.Combine(VersionsDir.FullName, Name + ".install"));
+
     Uri ServerVersionPath => new(ROOT_URL + Name + ".ver");
 
     Uri ServerZipPath => new(ROOT_URL + Name + ".zip");
 
+    public void OverrideInstallDirectory(DirectoryInfo dirInfo) =>
+        File.WriteAllText(InstallPointer.FullName, dirInfo.FullName);
+
+    public void ResetInstallDirectory()
+    {
+        if (InstallPointer.Exists)
+            InstallPointer.Delete();
+    }
 
     public async Task InstallAsync(IProgress<InstallProgress> progress = null, CancellationToken cancellationToken = default)
     {
@@ -155,13 +177,16 @@ public class Tool
                 return;
 
             await dst.WriteAsync(buffer.AsMemory(0, read), cancellationToken).ConfigureAwait(false);
-            
-            totalRead += read;
-            var newDL = preProgress + Math.Max(0, Math.Min(49, Convert.ToInt32((prevRead + totalRead) / totalLength * 100 / 2)));
-            if (newDL > lastDL)
+
+            if (progress != null)
             {
-                lastDL = newDL;
-                progress.Report(new(status, newDL));
+                totalRead += read;
+                var newDL = preProgress + Math.Max(0, Math.Min(49, Convert.ToInt32((prevRead + totalRead) / totalLength * 100 / 2)));
+                if (newDL > lastDL)
+                {
+                    lastDL = newDL;
+                    progress.Report(new(status, newDL));
+                }
             }
         }
     }
