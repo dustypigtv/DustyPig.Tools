@@ -23,4 +23,6 @@ public static class All
     public static Tool FasterWhisperXXL => new() { Exe = "faster-whisper-xxl.exe", Name = "Faster-Whisper-XXL" };
 
     public static Tool MkvPropEdit => new() { Exe = "mkvpropedit.exe", Name = "mkvpropedit" };
+
+    public static Tool FFmpegLibs => new() { Exe = "avcodec-58.dll", Name = "ffmpeg-libs" };
 }
