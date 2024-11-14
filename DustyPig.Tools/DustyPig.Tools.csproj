@@ -1,8 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net6;net7;net8</TargetFrameworks>
-		<LangVersion>12</LangVersion>
+		<TargetFrameworks>net7;net8;net9</TargetFrameworks>
+		<LangVersion>Latest</LangVersion>
+		<NoWarn>$(NoWarn);1591;1570</NoWarn>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
